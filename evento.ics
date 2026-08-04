@@ -1,0 +1,35 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Syensqo//Seminario Tecnico Internacional//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:America/Lima
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0500
+TZNAME:-05
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:1dad511c-c09a-4ad0-8e2a-d478ac37def4@syensqo.com
+DTSTAMP:20260803T150000Z
+DTSTART;TZID=America/Lima:20261023T090000
+DTEND;TZID=America/Lima:20261023T180000
+SUMMARY:Seminario Tecnico Internacional Syensqo
+LOCATION:Hotel Costa del Sol Arequipa\, Arequipa\, Peru
+DESCRIPTION:Un encuentro que reune a expertos, investigadores y lideres d
+ e la industria para compartir conocimientos, explorar tendencias y constr
+ uir juntos soluciones innovadoras para los desafios del futuro.\n\nEvento
+  gratuito para clientes de Syensqo.\nLugar: Hotel Costa del Sol Arequipa
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+SEQUENCE:0
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Seminario Tecnico Internacional Syensqo es manana
+END:VALARM
+END:VEVENT
+END:VCALENDAR
