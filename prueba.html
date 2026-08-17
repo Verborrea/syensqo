@@ -43,7 +43,7 @@
         text-decoration: none;
       }
       .card-gradient {
-        background-color: #fdeee4; /* fallback solido para clientes sin soporte de gradiente */
+        background-color: #ffffff; /* fallback ahora blanco, no #fdeee4 */
         background-image: linear-gradient(180deg, #ffffff 0%, #fdeee4 100%);
       }
       @media only screen and (max-width: 480px) {
@@ -89,13 +89,33 @@
           >
             <!-- Header con logo Syensqo y sol -->
             <tr>
-              <td style="padding: 24px 24px 0 24px" align="left">
-                <img
-                  src="https://seminariotecnicosyensqoperu.com/_astro/logo.BYFa-rrc_14ofYH.png"
-                  width="167"
-                  alt="Syensqo - Advancing Humanity"
-                  style="display: block"
-                />
+              <td style="padding: 16px 16px 0 24px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                >
+                  <tr>
+                    <td align="left" valign="top">
+                      <img
+                        src="https://seminariotecnicosyensqoperu.com/_astro/logo.BYFa-rrc_14ofYH.png"
+                        width="167"
+                        alt="Syensqo - Advancing Humanity"
+                        style="display: block"
+                      />
+                    </td>
+                    <td align="right" valign="top">
+                      <img
+                        src="https://verborrea.github.io/syensqo/deco.png"
+                        width="60"
+                        alt=""
+                        style="display: block"
+                      />
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
 
@@ -161,7 +181,8 @@
                             &quot;Poppins&quot;, Arial, Helvetica, sans-serif;
                           font-size: 16px;
                           font-weight: 700;
-                          color: #ffffff;
+                          color: #ffffff !important;
+                          text-decoration: none !important;
                         "
                         >Regístrate Aquí!</a
                       >
