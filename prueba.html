@@ -8,6 +8,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
     <title>4to Seminario Técnico Syensqo</title>
     <!--[if mso]>
       <noscript>
@@ -43,7 +45,7 @@
         text-decoration: none;
       }
       .card-gradient {
-        background-color: #ffffff; /* fallback ahora blanco, no #fdeee4 */
+        background-color: #ffffff; /* fallback blanco */
         background-image: linear-gradient(180deg, #ffffff 0%, #fdeee4 100%);
       }
       @media only screen and (max-width: 480px) {
@@ -55,9 +57,63 @@
           padding-right: 20px !important;
         }
       }
+
+      /* --- Protección contra dark mode (Apple Mail, Outlook mobile) --- */
+      @media (prefers-color-scheme: dark) {
+        body,
+        .force-bg-outer {
+          background-color: #ffd7bc !important;
+        }
+        .card-gradient,
+        .force-bg-card {
+          background-color: #ffffff !important;
+          background-image: linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fdeee4 100%
+          ) !important;
+        }
+        .force-text {
+          color: #333333 !important;
+        }
+        .force-bg-dark {
+          background-color: #1a1a1a !important;
+        }
+        .force-text-white {
+          color: #ffffff !important;
+        }
+        .force-btn {
+          background-color: #ff5431 !important;
+        }
+      }
+
+      /* --- Protección contra dark mode de Gmail (web y algunas apps) --- */
+      [data-ogsc] body,
+      [data-ogsc] .force-bg-outer {
+        background-color: #ffd7bc !important;
+      }
+      [data-ogsc] .card-gradient,
+      [data-ogsc] .force-bg-card {
+        background-color: #ffffff !important;
+      }
+      [data-ogsc] .force-text {
+        color: #333333 !important;
+      }
+      [data-ogsc] .force-bg-dark {
+        background-color: #1a1a1a !important;
+      }
+      [data-ogsc] .force-text-white {
+        color: #ffffff !important;
+      }
+      [data-ogsc] .force-btn {
+        background-color: #ff5431 !important;
+      }
     </style>
   </head>
-  <body style="margin: 0; padding: 0; background-color: #ffd7bc">
+  <body
+    style="margin: 0; padding: 0; background-color: #ffd7bc"
+    class="force-bg-outer"
+  >
     <table
       role="presentation"
       width="100%"
@@ -65,6 +121,7 @@
       cellspacing="0"
       border="0"
       style="background-color: #ffd7bc"
+      class="force-bg-outer"
     >
       <tr>
         <td align="center" style="padding: 24px 12px">
@@ -75,7 +132,7 @@
 <![endif]-->
           <table
             role="presentation"
-            class="container card-gradient"
+            class="container card-gradient force-bg-card"
             width="480"
             cellpadding="0"
             cellspacing="0"
@@ -87,18 +144,24 @@
               overflow: hidden;
             "
           >
-            <!-- Header con logo Syensqo y sol -->
+            <!-- Header con logo Syensqo e imagen decorativa -->
             <tr>
               <td style="padding: 16px 16px 0 24px">
                 <table
                   role="presentation"
-                  width="100%"
+                  width="440"
                   cellpadding="0"
                   cellspacing="0"
                   border="0"
+                  style="width: 440px"
                 >
                   <tr>
-                    <td align="left" valign="top">
+                    <td
+                      width="167"
+                      align="left"
+                      valign="top"
+                      style="width: 167px"
+                    >
                       <img
                         src="https://seminariotecnicosyensqoperu.com/_astro/logo.BYFa-rrc_14ofYH.png"
                         width="167"
@@ -106,10 +169,21 @@
                         style="display: block"
                       />
                     </td>
-                    <td align="right" valign="top">
+                    <td
+                      width="173"
+                      style="width: 173px; line-height: 1px; font-size: 1px"
+                    >
+                      &nbsp;
+                    </td>
+                    <td
+                      width="100"
+                      align="right"
+                      valign="top"
+                      style="width: 100px"
+                    >
                       <img
                         src="https://verborrea.github.io/syensqo/deco.png"
-                        width="60"
+                        width="100"
                         alt=""
                         style="display: block"
                       />
@@ -134,7 +208,7 @@
             <!-- Cuerpo del texto -->
             <tr>
               <td
-                class="px"
+                class="px force-text"
                 style="
                   padding: 28px 32px 8px 32px;
                   font-family:
@@ -170,6 +244,7 @@
                     <td
                       align="center"
                       style="border-radius: 10px; background-color: #ff5431"
+                      class="force-btn"
                     >
                       <a
                         href="https://seminariotecnicosyensqoperu.com/"
@@ -184,6 +259,7 @@
                           color: #ffffff !important;
                           text-decoration: none !important;
                         "
+                        class="force-text-white"
                         >Regístrate Aquí!</a
                       >
                     </td>
@@ -204,7 +280,10 @@
               </td>
             </tr>
             <tr>
-              <td style="background-color: #1a1a1a; padding: 14px 24px">
+              <td
+                style="background-color: #1a1a1a; padding: 14px 24px"
+                class="force-bg-dark"
+              >
                 <p
                   style="
                     margin: 0;
@@ -214,6 +293,7 @@
                     color: #ffffff;
                     text-align: center;
                   "
+                  class="force-text-white"
                 >
                   Explorando avances que impulsan la humanidad
                 </p>
