@@ -27,11 +27,11 @@ laptop personal.
 
 ## 1. Qué incluye este paquete
 
-| Archivo | Tamaño | Qué es |
-|---|---|---|
-| `baja-de-peso-app-codigo.zip` | ~76 KB | El código de la aplicación (34 archivos: backend, frontend, tests, docs) — sin `node_modules`, sin secretos. Generado desde el commit `eda2fc4` del repo. |
-| `baja_de_peso_dump.sql` | ~8 KB | ⚠️ **Contiene datos reales de pacientes.** 1 cuenta de doctor, 4 pacientes, 16 evaluaciones clínicas. Tratarlo como información médica confidencial (ver Parte 8). |
-| `RUNBOOK-migracion.md` | — | Este documento |
+| Archivo                       | Tamaño | Qué es                                                                                                                                                             |
+| ----------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `baja-de-peso-app-codigo.zip` | ~76 KB | El código de la aplicación (34 archivos: backend, frontend, tests, docs) — sin `node_modules`, sin secretos. Generado desde el commit `eda2fc4` del repo.          |
+| `baja_de_peso_dump.sql`       | ~8 KB  | ⚠️ **Contiene datos reales de pacientes.** 1 cuenta de doctor, 4 pacientes, 16 evaluaciones clínicas. Tratarlo como información médica confidencial (ver Parte 8). |
+| `RUNBOOK-migracion.md`        | —      | Este documento                                                                                                                                                     |
 
 **Verificación de integridad** (opcional, pero recomendado si se transfirió por USB — confirma que el archivo no se corrompió en la copia):
 
@@ -50,25 +50,28 @@ archivo, no sigas adelante con uno que no coincide.
 
 ## 2. Parte 0 — Antes de empezar: revisar qué hay en la PC destino
 
-*(~5 minutos)*
+_(~5 minutos)_
 
 Abrí PowerShell y corré, uno por uno:
 
 ```powershell
 node --version
 ```
+
 **Esperado:** `v22.x.x`. Este proyecto se desarrolló y probó con `v22.16.0` — cualquier
 `v22.x` debería servir; si da `v18`, `v20`, o no reconoce el comando, ir a la Parte 1.
 
 ```powershell
 psql --version
 ```
+
 **Esperado:** `psql (PostgreSQL) 16.x`. Se desarrolló con `16.9`. Si da otra versión
 mayor (15, 17) o no reconoce el comando, ir a la Parte 1.
 
 ```powershell
 Get-Service -Name "*postgres*"
 ```
+
 Si ya aparece un servicio `postgresql-x64-16` con `Status: Running`, PostgreSQL ya está
 instalado y corriendo — anotá si tenés o no la contraseña del usuario `postgres` de
 **esa** instalación (la vas a necesitar en la Parte 3; si no la tenés, puede que haga
@@ -81,7 +84,7 @@ Parte 3.
 
 ## 3. Parte 1 — Instalar prerequisitos
 
-*(~20-30 minutos, depende de la velocidad de internet)*
+_(~20-30 minutos, depende de la velocidad de internet)_
 
 ### 3.1 — Node.js v22 (LTS)
 
@@ -123,7 +126,7 @@ Parte 3.
 
 ## 4. Parte 2 — Restaurar la base de datos
 
-*(~15 minutos)*
+_(~15 minutos)_
 
 Todo esto se corre desde PowerShell. Reemplazá `LA_CONTRASEÑA_DE_POSTGRES` por la que
 elegiste en el paso 3.2 cada vez que aparezca.
@@ -139,12 +142,15 @@ node -e "console.log(require('crypto').randomBytes(18).toString('base64url'))"
 Copiá el resultado y guardalo en un gestor de contraseñas — la vas a necesitar en los
 pasos 4.2 y 5.3. En este documento la vamos a llamar `LA_CONTRASEÑA_APP`.
 
+LA_CONTRASEÑA_APP = sandamian2026
+
 ### 4.2 — Crear el rol y la base de datos vacía
 
 ```powershell
 $env:PGPASSWORD = "LA_CONTRASEÑA_DE_POSTGRES"
 psql -U postgres -h localhost -c "CREATE ROLE baja_de_peso_app WITH LOGIN PASSWORD 'LA_CONTRASEÑA_APP';"
 ```
+
 **Esperado:** `CREATE ROLE`. Si dice `role "baja_de_peso_app" already exists`, alguien
 ya corrió este paso antes — confirmar con el desarrollador antes de seguir (no volver a
 crear el rol con otra contraseña sin avisar, rompe cualquier `.env` ya configurado).
@@ -152,6 +158,7 @@ crear el rol con otra contraseña sin avisar, rompe cualquier `.env` ya configur
 ```powershell
 psql -U postgres -h localhost -c "CREATE DATABASE baja_de_peso OWNER postgres;"
 ```
+
 **Esperado:** `CREATE DATABASE`. Si dice `database "baja_de_peso" already exists`,
 parar y confirmar con el desarrollador — no continuar sin saber si esa base ya tiene
 datos.
@@ -167,6 +174,7 @@ todos los datos reales — **no hace falta correr ningún otro script de migraci
 además de este paso.**
 
 **Salida esperada** (resumida — va a imprimir más líneas, esto es lo importante):
+
 ```
 CREATE EXTENSION
 CREATE TABLE   (×3 — doctors, evaluations, patients)
@@ -176,6 +184,7 @@ COPY 4          (patients)
 ALTER TABLE    (varias — llaves primarias, foráneas, restricciones)
 CREATE INDEX
 ```
+
 Si en vez de `COPY 16` dice `COPY 0`, o el comando corta con un error `ERROR:`, **no
 sigas** — la restauración no fue limpia. Volvé a intentar desde el paso 4.2 con la base
 recién creada (no reutilices una base a medio restaurar).
@@ -185,12 +194,13 @@ recién creada (no reutilices una base a medio restaurar).
 ```powershell
 psql -U postgres -h localhost -d baja_de_peso -c "GRANT ALL ON ALL TABLES IN SCHEMA public TO baja_de_peso_app;"
 ```
+
 **Esperado:** `GRANT`.
 
-*(Nota técnica, no bloqueante: esto le da al rol de la app permisos más amplios de los
+_(Nota técnica, no bloqueante: esto le da al rol de la app permisos más amplios de los
 que el código realmente usa — nunca hace `DELETE` ni `TRUNCATE` por ejemplo. Se replica
 así a propósito porque es exactamente lo que ya está probado funcionando en la PC de
-desarrollo; acotarlo es una mejora de seguridad para más adelante, no para hoy.)*
+desarrollo; acotarlo es una mejora de seguridad para más adelante, no para hoy.)_
 
 ### 4.5 — Verificar la restauración con los valores exactos esperados
 
@@ -200,6 +210,7 @@ psql -U baja_de_peso_app -h localhost -d baja_de_peso -c "SELECT (SELECT count(*
 ```
 
 **Resultado exacto esperado:**
+
 ```
  doctores | pacientes | evaluaciones
 ----------+-----------+--------------
@@ -213,7 +224,7 @@ seguir a la Parte 3.
 
 ## 5. Parte 3 — Desplegar el código
 
-*(~15 minutos)*
+_(~15 minutos)_
 
 1. Descomprimí `baja-de-peso-app-codigo.zip` en una carpeta fija, por ejemplo
    `C:\baja-de-peso-app` (evitá rutas con espacios o tildes).
@@ -228,6 +239,7 @@ seguir a la Parte 3.
    Copy-Item .env.example .env
    ```
 4. Abrí `.env` con el Bloc de notas (`notepad .env`) y completalo así:
+
    ```
    DATABASE_URL=postgresql://baja_de_peso_app:LA_CONTRASEÑA_APP@localhost:5432/baja_de_peso
    PORT=3001
@@ -235,10 +247,13 @@ seguir a la Parte 3.
    JWT_SECRET=<generar uno nuevo, ver abajo>
    ALLOWED_ORIGIN=http://127.0.0.1:3001
    ```
+
    Para el `JWT_SECRET` (tampoco reutilizar el de la PC de desarrollo):
+
    ```powershell
    node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
    ```
+
    Pegá el resultado como valor de `JWT_SECRET`, guardá el archivo.
 
    **Sobre `HOST`:** `127.0.0.1` significa que la app solo responde a peticiones desde
@@ -247,16 +262,20 @@ seguir a la Parte 3.
    también ajustar la regla de firewall (Parte 7, punto 2).
 
 5. **Prueba manual antes de instalarlo como servicio:**
+
    ```powershell
    npm start
    ```
+
    **Esperado:** `API corriendo en http://127.0.0.1:3001`, y la terminal queda
    "colgada" ahí (es normal, el proceso sigue corriendo en primer plano).
 
    En **otra** ventana de PowerShell:
+
    ```powershell
    Invoke-RestMethod http://127.0.0.1:3001/api/health
    ```
+
    **Esperado:** `status ok` (formato tabla de PowerShell) o `{"status":"ok"}`.
 
    Abrí `http://127.0.0.1:3001` en un navegador. Iniciá sesión con la cuenta de doctor
@@ -271,7 +290,7 @@ seguir a la Parte 3.
 
 ## 6. Parte 4 — Que el sistema sobreviva un reinicio de la PC
 
-*(~15 minutos)*
+_(~15 minutos)_
 
 Sin esto, si la PC se reinicia (corte de luz, actualización de Windows), el sistema
 queda caído hasta que alguien lo note y lo levante a mano. Usamos
@@ -291,19 +310,23 @@ solo, **sin que nadie tenga que iniciar sesión en la PC**.
    C:\nssm\nssm.exe set BajaDePesoAPI AppStderr "C:\baja-de-peso-app\service-error.log"
    C:\nssm\nssm.exe start BajaDePesoAPI
    ```
-   *(Las líneas de `AppStdout`/`AppStderr` son nuevas respecto a la primera versión de
+   _(Las líneas de `AppStdout`/`AppStderr` son nuevas respecto a la primera versión de
    este runbook — sin esto, si el servicio falla al arrancar, no queda ningún registro
-   de por qué.)*
+   de por qué.)_
 3. Verificar:
+
    ```powershell
    Get-Service BajaDePesoAPI
    ```
+
    **Esperado:** `Status: Running`.
 
    Si dice `Stopped`, revisar el log de errores:
+
    ```powershell
    Get-Content C:\baja-de-peso-app\service-error.log -Tail 20
    ```
+
    Las causas más comunes: `.env` mal configurado (paso 5.4), o el puerto 3001 ya en
    uso por la prueba manual de la Parte 3 que no se cerró (`Ctrl+C` en esa ventana antes
    de seguir acá).
@@ -319,7 +342,7 @@ solo, **sin que nadie tenga que iniciar sesión en la PC**.
 
 ## 7. Parte 5 — Backups automáticos
 
-*(~15 minutos)*
+_(~15 minutos)_
 
 **Diseño del esquema** (decidido junto con el desarrollador, 2026-08-07):
 
@@ -329,17 +352,17 @@ solo, **sin que nadie tenga que iniciar sesión en la PC**.
   con los 15 años que exige la
   [Norma Técnica de Salud para la Gestión de la Historia Clínica](https://www.gob.pe/institucion/minsa/normas-legales/187487-214-)
   (R.M. Nº 214-2018/MINSA). La base es chica, así que guardar los mensuales
-  indefinidamente no cuesta espacio. *(No es asesoría legal — confirmar con quien
-  maneje el tema regulatorio en el policlínico.)*
+  indefinidamente no cuesta espacio. _(No es asesoría legal — confirmar con quien
+  maneje el tema regulatorio en el policlínico.)_
 - **Ubicación:** solo local por ahora — sin copia en la nube todavía (decisión
   explícita).
 - **Verificación:** cada corrida confirma que el `.sql` generado no está vacío/corrupto
   y deja todo registrado en un log.
 
-*(Este diseño fue probado en vivo antes de escribir este runbook: se corrió la lógica
+_(Este diseño fue probado en vivo antes de escribir este runbook: se corrió la lógica
 completa contra una base de prueba, incluyendo una simulación de fallo intencional
 —contraseña incorrecta— para confirmar que el chequeo de integridad realmente detecta
-un problema y no solo cuando todo sale bien.)*
+un problema y no solo cuando todo sale bien.)_
 
 ### 7.1 — Crear la estructura de carpetas
 
@@ -419,6 +442,7 @@ contraseña del paso 7.2 sea la correcta y que el servicio de PostgreSQL esté
 ```powershell
 Get-ChildItem C:\backups-baja-de-peso\diarios\
 ```
+
 **Esperado:** un archivo `baja_de_peso_YYYY-MM-DD.sql` de unos 8 KB.
 
 **Recomendación a futuro, no bloqueante:** cada tanto (ej. una vez al trimestre),
@@ -503,10 +527,12 @@ haber perdido nada.
 
 Para reiniciar limpio en la PC destino (borra lo que se haya avanzado ahí, no toca la
 PC de desarrollo):
+
 ```powershell
 psql -U postgres -h localhost -c "DROP DATABASE IF EXISTS baja_de_peso;"
 psql -U postgres -h localhost -c "DROP ROLE IF EXISTS baja_de_peso_app;"
 ```
+
 y volver a empezar desde la Parte 4.2.
 
 **Nunca correr estos dos comandos contra la PC de desarrollo** — ahí sí hay datos
